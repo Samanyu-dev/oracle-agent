@@ -1,0 +1,15 @@
+name: CSF407_2025_2022A4PS0398H   
+
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - python=3.10
+  - numpy
+  - matplotlib
+  - imageio
+  - pillow
+  - pip
+  - pip:
+      - imageio[ffmpeg]
