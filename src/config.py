@@ -23,6 +23,34 @@ BRICK_RATIO      = 0.10   # 10% of non-path cells are Brick Wall
 PATH_VOLCANOES   = 2      # Exactly 2 Volcanoes on the ground-truth path
 PATH_WATERS      = 2      # Exactly 2 Waters on the ground-truth path
 
+# ── Exercise 2 Probabilistic Agent Settings ──────────────────
+P_VOLCANO_PRIOR    = 0.4    # Prior probability of a cell being Volcano
+P_WATER_PRIOR      = 0.4    # Prior probability of a cell being Water
+
+# Derived probabilities
+P_LAVA             = 0.4 * (1 - 0.4)  # P(Volcano) * P(not Water) = 0.24
+P_WATER            = (1 - 0.4) * 0.4  # P(not Volcano) * P(Water) = 0.24  
+P_LAND             = 0.4 * 0.4        # P(not Volcano) * P(not Water) = 0.16
+P_WALL             = (1 - 0.4) * (1 - 0.4)  # P(not Volcano) * P(not Water) = 0.36
+
+# Sensor model probabilities
+P_THERMAL_GIVEN    = {
+    'lava': 0.85,      # P(Thermal=True | Lava)
+    'water': 0.01,     # P(Thermal=True | Water) 
+    'land': 0.10,      # P(Thermal=True | Land)
+    'wall': 0.05,      # P(Thermal=True | Wall)
+}
+
+P_SEISMIC_GIVEN    = {
+    'lava': 0.60,      # P(Seismic=True | Lava)
+    'water': 0.85,     # P(Seismic=True | Water)
+    'land': 0.05,      # P(Seismic=True | Land)
+    'wall': 0.01,      # P(Seismic=True | Wall)
+}
+
+MAX_SCANS_PER_CELL = 4      # Maximum sensor scans per cell
+RISK_THRESHOLD     = 0.5    # Risk threshold for considering a cell hazardous
+
 
 # ── Visualization Color Codes 
 COLOR_LAND          = '#5DBB63'   # Green
