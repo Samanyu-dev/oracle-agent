@@ -1,6 +1,6 @@
 # CSF407_2026_2022A4PS0398H - Oracle Agent
 
-This is our submission for Project Assignment 1 of CS F407 (Artificial Intelligence) at BITS Pilani Hyderabad Campus, 2nd Semester 2026.
+This is our submission for Project Assignment 1 of CS F407 (Artificial Intelligence).
 
 ---
 
