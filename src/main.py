@@ -9,10 +9,10 @@ from config import (
     OUTPUT_DIR, FRAMES_DIR,
 )
 from grid_gen   import generate_grid, print_grid
-from agent      import OracleAgentEx1
+from agent      import OracleAgentEx1, OracleAgentEx2
 from visualizer import (
     save_ground_truth, save_initial_grid,
-    render_simulation_ex1,
+    render_simulation_ex1, render_simulation_ex2,
 )
 
 
@@ -90,6 +90,26 @@ def main():
     if sim_log_ex1:
         render_simulation_ex1(grid, sim_log_ex1)
 
+    # ── Exercise 2 
+    print('\n' + '='*60)
+    print('  EXERCISE 2  —  Probabilistic Oracle Agent')
+    print('='*60)
+
+    agent_ex2 = OracleAgentEx2(grid)   # Same grid as Ex1
+    print('[Ex2] Running probabilistic A* with Bayesian sensors...')
+    sim_log_ex2, path_ex2 = agent_ex2.run()
+
+    print_results('Exercise 2', sim_log_ex2)
+
+    if sim_log_ex2:
+        print(f'[Ex2] Total sensor scans performed: {len(agent_ex2.scan_log)}')
+        print(f'[Ex2] Paths explored: {len(agent_ex2.explored_paths)}')
+        if agent_ex2.best_path:
+            print(f'[Ex2] Best path length: {len(agent_ex2.best_path)} cells')
+            print(f'[Ex2] Best path score: {agent_ex2.best_score:.4f}')
+        
+        # Render Exercise 2 dual-panel animation
+        render_simulation_ex2(grid, sim_log_ex2, agent_ex2.scan_log)
 
     # ── Summary 
     print('\n' + '='*60)

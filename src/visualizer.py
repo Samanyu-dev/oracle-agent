@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 import imageio.v2 as imageio
+from typing import Dict
 
 from config import (
     COLOR_LAND, COLOR_VOLCANO, COLOR_WATER, COLOR_BRICK,
@@ -235,5 +236,130 @@ def render_simulation_ex1(grid, sim_log):
 
     imageio.mimsave(SIMULATION_GIF, frames, fps=2, loop=0)
     print(f'Saved: {SIMULATION_GIF}')
+
+
+# ── Exercise 2 Dual-Panel Visualization
+
+def _belief_color(bp: Dict) -> str:
+    """Determine cell color based on beliefs."""
+    if bp.get('V', 0) > 0.4:
+        return COLOR_VOLCANO  # Red
+    elif bp.get('W', 0) > 0.4:
+        return COLOR_WATER    # Blue
+    elif bp.get('L', 0) > 0.5:
+        return COLOR_LAND     # Green
+    else:
+        return COLOR_UNKNOWN  # Gray
+
+def _draw_belief_map(ax, beliefs, grid, title=''):
+    """Draw left panel: belief map with risk percentages and scan indicators."""
+    rows = len(grid)
+    cols = len(grid[0])
+    ax.set_xlim(0, cols)
+    ax.set_ylim(0, rows)
+    ax.set_aspect('equal')
+    ax.set_title(title, fontsize=9, pad=4, fontweight='bold')
+    ax.axis('off')
+
+    for r in range(rows):
+        for c in range(cols):
+            # Draw belief-based color
+            color = _belief_color(beliefs[r][c])
+            rect = plt.Rectangle((c, rows-r-1), 1, 1,
+                               facecolor=color,
+                               edgecolor='white', linewidth=0.8)
+            ax.add_patch(rect)
+            
+            # Show risk percentage
+            risk = beliefs[r][c].get('V', 0) + beliefs[r][c].get('W', 0)
+            ax.text(c+0.5, rows-r-0.5, f'{risk*100:.0f}%',
+                    ha='center', va='center',
+                    fontsize=7, fontweight='bold',
+                    color='black' if risk < 0.5 else 'white')
+
+def _draw_ground_truth_map(ax, grid, title=''):
+    """Draw right panel: ground truth with cell labels."""
+    rows = len(grid)
+    cols = len(grid[0])
+    ax.set_xlim(0, cols)
+    ax.set_ylim(0, rows)
+    ax.set_aspect('equal')
+    ax.set_title(title, fontsize=9, pad=4, fontweight='bold')
+    ax.axis('off')
+
+    for r in range(rows):
+        for c in range(cols):
+            ctype = grid[r][c]
+            color = CELL_COLORS.get(ctype, COLOR_UNKNOWN)
+            rect = plt.Rectangle((c, rows-r-1), 1, 1,
+                               facecolor=color,
+                               edgecolor='white', linewidth=0.8)
+            ax.add_patch(rect)
+            ax.text(c+0.5, rows-r-0.5, ctype,
+                    ha='center', va='center',
+                    fontsize=8, fontweight='bold',
+                    color=TEXT_COLORS.get(ctype, 'white'))
+
+def _render_ex2_frame(grid, beliefs, sim_log, step_idx, frame_path):
+    """Render dual-panel frame for Exercise 2."""
+    rows = len(grid)
+    cols = len(grid[0])
+    step = sim_log[step_idx]
+
+    title = (f'Step {step.step}  |  Lives: {step.lives}  |  '
+             f'Score: {step.score:.3f}  |  '
+             f'Turns: {step.turns}  |  Time: {step.time_units}')
+
+    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(cols*1.8 + 2, rows*0.9 + 0.5))
+    
+    # Left panel: Belief map
+    _draw_belief_map(ax_left, beliefs, grid, title='Belief Map (Agent View)')
+    
+    # Right panel: Ground truth
+    _draw_ground_truth_map(ax_right, grid, title='Ground Truth')
+    
+    damage_cells = set()
+
+    # Draw all arrows up to this step on both panels
+    for s in sim_log[:step_idx+1]:
+        draw_arrow(ax_left, s.from_cell, s.to_cell, s.action, s.took_damage, rows)
+        draw_arrow(ax_right, s.from_cell, s.to_cell, s.action, s.took_damage, rows)
+        if s.took_damage:
+            damage_cells.add(s.to_cell)
+
+    # Damage markers on both panels
+    for cell in damage_cells:
+        draw_damage_marker(ax_left, cell, rows)
+        draw_damage_marker(ax_right, cell, rows)
+
+    # Agent current position on both panels
+    draw_agent(ax_left, step.to_cell, rows)
+    draw_agent(ax_right, step.to_cell, rows)
+
+    plt.tight_layout()
+    plt.savefig(frame_path, dpi=100, bbox_inches='tight')
+    plt.close(fig)
+
+def render_simulation_ex2(grid, sim_log, scan_log):
+    """Render Exercise 2 dual-panel animation.""" 
+    _ensure_dirs()
+    if not sim_log:
+        print('[Ex2] No simulation log to render.')
+        return
+
+    frames_dir_ex2 = 'outputs/frames_ex2'
+    os.makedirs(frames_dir_ex2, exist_ok=True)
+
+    frames = []
+    print(f'[Ex2] Rendering {len(sim_log)} dual-panel frames...')
+    for i in range(len(sim_log)):
+        fp = os.path.join(frames_dir_ex2, f'frame_{i:04d}.png')
+        beliefs = sim_log[i].beliefs if sim_log[i].beliefs else [[{'V': 0.24, 'W': 0.24, 'L': 0.16, 'B': 0.36} for _ in range(len(grid[0]))] for _ in range(len(grid))]
+        _render_ex2_frame(grid, beliefs, sim_log, i, fp)
+        frames.append(imageio.imread(fp))
+
+    sim_gif_ex2 = 'outputs/simulation_ex2.gif'
+    imageio.mimsave(sim_gif_ex2, frames, fps=2, loop=0)
+    print(f'Saved: {sim_gif_ex2}')
 
 
