@@ -21,7 +21,6 @@ from config import (
 )
 
 
-# ── Color mapping 
 CELL_COLORS = {
     CELL_LAND    : COLOR_LAND,
     CELL_VOLCANO : COLOR_VOLCANO,
@@ -46,7 +45,6 @@ def _ensure_dirs():
         os.makedirs(d, exist_ok=True)
 
 
-# ── Core drawing helpers 
 
 def cell_to_xy(r, c, rows):
     """Convert grid (row,col) to matplotlib (x,y) centre coordinates."""
@@ -135,7 +133,7 @@ def draw_agent(ax, cell, rows):
             fontsize=7, color='white', fontweight='bold', zorder=8)
 
 
-# ── Static saves
+
 
 def save_ground_truth(grid, path, anchor1, anchor2):
     _ensure_dirs()
@@ -144,21 +142,21 @@ def save_ground_truth(grid, path, anchor1, anchor2):
     fig, ax = plt.subplots(figsize=(cols*0.9, rows*0.9))
     draw_grid_base(ax, grid, title='Ground Truth Trajectory')
 
-    # Highlight path cells
+   
     for (r, c) in path:
         rect = plt.Rectangle((c, rows-r-1), 1, 1,
                                facecolor='none',
                                edgecolor=COLOR_PATH_BORDER, linewidth=2.5, zorder=3)
         ax.add_patch(rect)
 
-    # Mark anchors
+    
     for i, (r, c) in enumerate([anchor1, anchor2], start=1):
         ax.text(c+0.5, rows-r-0.3, f'A{i}',
                 ha='center', va='center',
                 fontsize=7, color='yellow',
                 fontweight='bold', zorder=9)
 
-    # Legend
+    
     patches = [
         mpatches.Patch(color=COLOR_PATH_BORDER, label='Ground-truth path'),
         mpatches.Patch(color=COLOR_VOLCANO,     label='Volcano (V)'),
@@ -187,7 +185,7 @@ def save_initial_grid(grid):
     print(f'Saved: {INITIAL_GRID_PNG}')
 
 
-# ── Exercise 1 Simulation
+
 
 def _render_ex1_frame(grid, sim_log, step_idx, frame_path):
     rows = len(grid)
@@ -203,17 +201,17 @@ def _render_ex1_frame(grid, sim_log, step_idx, frame_path):
 
     damage_cells = set()
 
-    # Draw all arrows up to this step
+    
     for s in sim_log[:step_idx+1]:
         draw_arrow(ax, s.from_cell, s.to_cell, s.action, s.took_damage, rows)
         if s.took_damage:
             damage_cells.add(s.to_cell)
 
-    # Damage markers
+ 
     for cell in damage_cells:
         draw_damage_marker(ax, cell, rows)
 
-    # Agent current position
+  
     draw_agent(ax, step.to_cell, rows)
 
     plt.tight_layout()
@@ -238,18 +236,18 @@ def render_simulation_ex1(grid, sim_log):
     print(f'Saved: {SIMULATION_GIF}')
 
 
-# ── Exercise 2 Dual-Panel Visualization
+
 
 def _belief_color(bp: Dict) -> str:
     """Determine cell color based on beliefs."""
     if bp.get('V', 0) > 0.4:
-        return COLOR_VOLCANO  # Red
+        return COLOR_VOLCANO 
     elif bp.get('W', 0) > 0.4:
-        return COLOR_WATER    # Blue
+        return COLOR_WATER    
     elif bp.get('L', 0) > 0.5:
-        return COLOR_LAND     # Green
+        return COLOR_LAND     
     else:
-        return COLOR_UNKNOWN  # Gray
+        return COLOR_UNKNOWN  
 
 def _draw_belief_map(ax, beliefs, grid, title=''):
     """Draw left panel: belief map with risk percentages and scan indicators."""
@@ -263,14 +261,14 @@ def _draw_belief_map(ax, beliefs, grid, title=''):
 
     for r in range(rows):
         for c in range(cols):
-            # Draw belief-based color
+            
             color = _belief_color(beliefs[r][c])
             rect = plt.Rectangle((c, rows-r-1), 1, 1,
                                facecolor=color,
                                edgecolor='white', linewidth=0.8)
             ax.add_patch(rect)
             
-            # Show risk percentage
+          
             risk = beliefs[r][c].get('V', 0) + beliefs[r][c].get('W', 0)
             ax.text(c+0.5, rows-r-0.5, f'{risk*100:.0f}%',
                     ha='center', va='center',
@@ -312,27 +310,27 @@ def _render_ex2_frame(grid, beliefs, sim_log, step_idx, frame_path):
 
     fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(cols*1.8 + 2, rows*0.9 + 0.5))
     
-    # Left panel: Belief map
+   
     _draw_belief_map(ax_left, beliefs, grid, title='Belief Map (Agent View)')
     
-    # Right panel: Ground truth
+    
     _draw_ground_truth_map(ax_right, grid, title='Ground Truth')
     
     damage_cells = set()
 
-    # Draw all arrows up to this step on both panels
+    
     for s in sim_log[:step_idx+1]:
         draw_arrow(ax_left, s.from_cell, s.to_cell, s.action, s.took_damage, rows)
         draw_arrow(ax_right, s.from_cell, s.to_cell, s.action, s.took_damage, rows)
         if s.took_damage:
             damage_cells.add(s.to_cell)
 
-    # Damage markers on both panels
+    
     for cell in damage_cells:
         draw_damage_marker(ax_left, cell, rows)
         draw_damage_marker(ax_right, cell, rows)
 
-    # Agent current position on both panels
+   
     draw_agent(ax_left, step.to_cell, rows)
     draw_agent(ax_right, step.to_cell, rows)
 

@@ -8,7 +8,7 @@ from config import (
 )
 
 
-# ── Helper: BFS shortest path
+
 def _bfs_path(grid_blocked, start, end, rows, cols):
     """
     BFS from start to end avoiding CELL_BRICK cells.
@@ -54,14 +54,14 @@ def _random_walk_segment(start, end, rows, cols, avoid=None, noise=0.35):
         r, c  = current
         er, ec = end
 
-        # Goal-directed moves
+      
         directed = []
         if r < er: directed.append((r+1, c))
         if r > er: directed.append((r-1, c))
         if c < ec: directed.append((r, c+1))
         if c > ec: directed.append((r, c-1))
 
-        # All orthogonal moves (for noise)
+        
         all_moves = [(r+dr, c+dc) for dr,dc in [(-1,0),(1,0),(0,-1),(0,1)]]
 
         def valid(cell):
@@ -73,12 +73,12 @@ def _random_walk_segment(start, end, rows, cols, avoid=None, noise=0.35):
         all_ok   = [m for m in all_moves if valid(m)]
 
         if not directed and not all_ok:
-            break   # stuck — BFS fallback below
+            break   
 
         use_noise = random.random() < noise and all_ok
         candidates = all_ok if use_noise else (directed if directed else all_ok)
 
-        # Prefer cells not in avoid
+        
         preferred = [m for m in candidates if m not in avoid]
         chosen = random.choice(preferred if preferred else candidates)
 
@@ -87,7 +87,7 @@ def _random_walk_segment(start, end, rows, cols, avoid=None, noise=0.35):
         current = chosen
 
     if current != end:
-        # BFS fallback
+       
         bfs = _bfs_path(set(), current, end, rows, cols)
         if bfs:
             for cell in bfs[1:]:
@@ -120,27 +120,27 @@ def generate_unique_path(rows, cols):
 
     max_attempts = 200
     for _ in range(max_attempts):
-        # Pick anchor1 in top-left region
+        
         r1 = random.randint(1, rows//2 - 1)
         c1 = random.randint(1, cols//2 - 1)
 
-        # Pick anchor2 in bottom-right region
+        
         r2 = random.randint(rows//2, rows-2)
         c2 = random.randint(cols//2, cols-2)
 
-        # Constraints
+       
         if r1 == r2 or c1 == c2:
             continue
         if abs(r1-r2) <= 2 and abs(c1-c2) <= 2:
             continue
-        # Neither anchor is start or goal
+        
         if (r1,c1) in [start, goal] or (r2,c2) in [start, goal]:
             continue
 
         anchor1 = (r1, c1)
         anchor2 = (r2, c2)
 
-        # Build path segments with random walks
+       
         seg1 = _random_walk_segment(start,   anchor1, rows, cols, noise=0.30)
         seg2 = _random_walk_segment(anchor1, anchor2, rows, cols, noise=0.30,
                                     avoid=set(seg1) if seg1 else set())
@@ -151,7 +151,7 @@ def generate_unique_path(rows, cols):
         if not seg1 or not seg2 or not seg3:
             continue
 
-        # Merge and deduplicate preserving order
+        
         seen = set()
         full_path = []
         for cell in seg1 + seg2[1:] + seg3[1:]:
@@ -159,7 +159,7 @@ def generate_unique_path(rows, cols):
                 seen.add(cell)
                 full_path.append(cell)
 
-        # Path must contain both anchors
+        
         if anchor1 not in seen or anchor2 not in seen:
             continue
 
@@ -179,7 +179,7 @@ def place_hazards_on_path(path, anchor1, anchor2):
     """
     protected = {path[0], path[-1], anchor1, anchor2}
 
-    # Eligible indices (not protected)
+    
     eligible = [i for i, cell in enumerate(path) if cell not in protected]
 
     def non_adjacent_pick(pool, n, already_placed, path):
@@ -200,7 +200,7 @@ def place_hazards_on_path(path, anchor1, anchor2):
                 picked.append(idx)
             if len(picked) == n:
                 return picked
-        return None  # failed
+        return None 
 
     for _ in range(500):
         pool = list(eligible)
@@ -214,7 +214,7 @@ def place_hazards_on_path(path, anchor1, anchor2):
         if water_idx is None:
             continue
 
-        # Build type mapping
+     
         volcano_set = set(volcano_idx)
         water_set   = set(water_idx)
         result = {}
@@ -254,12 +254,11 @@ def generate_grid(rows=GRID_ROWS, cols=GRID_COLS, seed=None):
 
     path_set = set(path)
 
-    # Initialize grid
     grid = [[None]*cols for _ in range(rows)]
     for (r,c), ctype in path_types.items():
         grid[r][c] = ctype
 
-    # Non-path cells
+   
     non_path = [(r,c) for r in range(rows) for c in range(cols)
                 if (r,c) not in path_set]
     random.shuffle(non_path)
@@ -267,9 +266,9 @@ def generate_grid(rows=GRID_ROWS, cols=GRID_COLS, seed=None):
 
     n_hazard = int(n * HAZARD_RATIO)
     n_land   = int(n * LAND_RATIO)
-    # Remainder → Brick
+    
 
-    # Build hazard pool (roughly equal V and W)
+    
     hazard_pool = [CELL_VOLCANO, CELL_WATER] * (n_hazard // 2 + 1)
     random.shuffle(hazard_pool)
 
@@ -281,7 +280,7 @@ def generate_grid(rows=GRID_ROWS, cols=GRID_COLS, seed=None):
         else:
             grid[r][c] = CELL_BRICK
 
-    # Guarantee start and goal
+    
     grid[0][0]           = CELL_START
     grid[rows-1][cols-1] = CELL_GOAL
 

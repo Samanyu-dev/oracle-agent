@@ -1,7 +1,7 @@
 import os
 import sys
 
-# Ensure src/ is importable when run from project root or src/
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import (
@@ -16,7 +16,6 @@ from visualizer import (
 )
 
 
-# ── Utility 
 
 def print_path_info(path, anchor1, anchor2):
     print('\n── Ground Truth Path ')
@@ -52,31 +51,29 @@ def print_results(tag, log):
     print()
 
 
-# ── Main 
 
 def main():
     print('=' * 60)
     print('  CS F407  —  Oracle Agent  —  BITS Pilani Hyderabad')
     print('=' * 60)
 
-    # ── Setup output directories 
+   
     for d in [OUTPUT_DIR, FRAMES_DIR]:
         os.makedirs(d, exist_ok=True)
 
-    # ── Generate grid 
     print(f'\nGenerating {GRID_ROWS}×{GRID_COLS} grid...')
     grid, path, anchor1, anchor2 = generate_grid(GRID_ROWS, GRID_COLS)
 
-    # ── Print to terminal 
+
     print('\n── Initial Grid ')
     print_grid(grid)
     print_path_info(path, anchor1, anchor2)
 
-    # ── Save static PNGs 
+   
     save_ground_truth(grid, path, anchor1, anchor2)
     save_initial_grid(grid)
 
-    # ── Exercise 1 
+ 
     print('\n' + '='*60)
     print('  EXERCISE 1  —  Deterministic Oracle Agent')
     print('='*60)
@@ -90,12 +87,11 @@ def main():
     if sim_log_ex1:
         render_simulation_ex1(grid, sim_log_ex1)
 
-    # ── Exercise 2 
     print('\n' + '='*60)
     print('  EXERCISE 2  —  Probabilistic Oracle Agent')
     print('='*60)
 
-    agent_ex2 = OracleAgentEx2(grid)   # Same grid as Ex1
+    agent_ex2 = OracleAgentEx2(grid)   
     print('[Ex2] Running probabilistic A* with Bayesian sensors...')
     sim_log_ex2, path_ex2 = agent_ex2.run()
 
@@ -108,10 +104,10 @@ def main():
             print(f'[Ex2] Best path length: {len(agent_ex2.best_path)} cells')
             print(f'[Ex2] Best path score: {agent_ex2.best_score:.4f}')
         
-        # Render Exercise 2 dual-panel animation
+        
         render_simulation_ex2(grid, sim_log_ex2, agent_ex2.scan_log)
 
-    # ── Summary 
+  
     print('\n' + '='*60)
     print('  OUTPUT FILES')
     print('='*60)

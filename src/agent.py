@@ -21,14 +21,14 @@ class StepRecord:
     step        : int
     from_cell   : Tuple[int,int]
     to_cell     : Tuple[int,int]
-    action      : str            # 'walk' or 'jump'
+    action      : str           
     took_damage : bool
     lives       : int
     turns       : int
     time_units  : int
     score       : float
-    beliefs     : Optional[List[List[Dict]]] = None   # Ex2 only
-    scan_events : Optional[List[Dict]]       = None   # Ex2 only
+    beliefs     : Optional[List[List[Dict]]] = None   
+    scan_events : Optional[List[Dict]]       = None   
 
 
 @dataclass
@@ -69,7 +69,7 @@ class OracleAgentEx1:
     def _in_bounds(self, r:int, c:int) -> bool:
         return 0 <= r < self.rows and 0 <= c < self.cols
 
-    # ── Neighbor generation
+   
     def _neighbors(self, r:int, c:int):
         """
         Yields (nr, nc, action, time_cost, turn_cost).
@@ -81,23 +81,21 @@ class OracleAgentEx1:
             → costs only TURN_COST (bounce), no position change.
         """
         for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
-            # Walk
+            
             nr, nc = r+dr, c+dc
             if self._in_bounds(nr, nc):
                 if self.grid[nr][nc] != CELL_BRICK:
                     yield (nr, nc, 'walk', WALK_TIME_COST, TURN_COST)
-                # brick walk → bounce, but we just skip it in planning
-                # (handled by not yielding a valid move there)
+                
 
-            # Jump
-            mr, mc = r+dr,   c+dc    # middle cell
-            jr, jc = r+2*dr, c+2*dc  # landing cell
+            
+            mr, mc = r+dr,   c+dc    
+            jr, jc = r+2*dr, c+2*dc  
             if self._in_bounds(mr, mc) and self._in_bounds(jr, jc):
                 if (self.grid[mr][mc] != CELL_BRICK and
                         self.grid[jr][jc] != CELL_BRICK):
                     yield (jr, jc, 'jump', JUMP_TIME_COST, TURN_COST)
 
-    # ── Heuristic 
     def _heuristic(self, r:int, c:int, lives:int) -> float:
         """
         Admissible heuristic: minimum time to reach goal / current lives.
@@ -113,7 +111,6 @@ class OracleAgentEx1:
             return float('inf')
         return (min_time + life_pen + manhattan) / lives
 
-    # ── A* Search
     def a_star(self):
         """
         A* where state = (row, col, lives_remaining).
@@ -123,9 +120,9 @@ class OracleAgentEx1:
         """
         start = (0, 0)
 
-        # heap: (priority, turns, time, lives, pos, path)
+       
         heap = [(0.0, 0, 0, MAX_LIVES, start, [start])]
-        best = {}   # state → best cost seen
+        best = {}   
 
         while heap:
             priority, turns, time_u, lives, pos, path = heapq.heappop(heap)
@@ -151,7 +148,7 @@ class OracleAgentEx1:
                     new_lives -= 1
 
                 if new_lives <= 0:
-                    continue   # don't explore death states
+                    continue   
 
                 new_score = (new_turns + new_time) / new_lives
                 h = self._heuristic(nr, nc, new_lives)
@@ -164,7 +161,7 @@ class OracleAgentEx1:
 
         return None, 0, 0, 0
 
-    # ── Run simulation
+    
     def run(self) -> Tuple[Optional[List[StepRecord]], Optional[List]]:
         """
         Find optimal path with A*, then simulate step by step.
@@ -219,9 +216,6 @@ class OracleAgentEx1:
         return log, path
 
 
-# ============================================================
-#  Exercise 2  —  Probabilistic Oracle Agent
-# ============================================================
 
 class OracleAgentEx2:
     """
@@ -236,15 +230,12 @@ class OracleAgentEx2:
         self.rows = len(grid)
         self.cols = len(grid[0])
         self.goal = (self.rows-1, self.cols-1)
-        
-        # Initialize belief maps
+       
         self.beliefs = self._init_beliefs()
         
-        # Track scan history
         self.scan_log = []
-        self.scan_counts = {}  # (r,c) -> count
+        self.scan_counts = {}  
         
-        # Track multiple paths explored
         self.explored_paths = []
         self.best_path = None
         self.best_score = float('inf')
@@ -255,7 +246,6 @@ class OracleAgentEx2:
         for r in range(self.rows):
             row_beliefs = []
             for c in range(self.cols):
-                # Use correct priors from config
                 bp = {
                     CELL_VOLCANO: P_LAVA,
                     CELL_WATER:   P_WATER,
@@ -277,13 +267,13 @@ class OracleAgentEx2:
         """Update beliefs using Bayesian inference."""
         bp = self.beliefs[r][c]
         
-        # Store original probabilities for debugging
+       
         original_volcano = bp[CELL_VOLCANO]
         original_water = bp[CELL_WATER]
         
-        # Thermal sensor update
+        
         if thermal:
-            # P(V|T+) = P(T+|V) * P(V) / P(T+)
+            
             p_t_plus = (P_THERMAL_GIVEN['lava'] * bp[CELL_VOLCANO] +
                        P_THERMAL_GIVEN['land'] * bp[CELL_LAND] +
                        P_THERMAL_GIVEN['water'] * bp[CELL_WATER] +
@@ -292,7 +282,7 @@ class OracleAgentEx2:
                 bp[CELL_VOLCANO] = (P_THERMAL_GIVEN['lava'] * bp[CELL_VOLCANO]) / p_t_plus
         
         else:
-            # P(V|T-) = P(T-|V) * P(V) / P(T-)
+            
             p_t_minus = ((1 - P_THERMAL_GIVEN['lava']) * bp[CELL_VOLCANO] +
                         (1 - P_THERMAL_GIVEN['land']) * bp[CELL_LAND] +
                         (1 - P_THERMAL_GIVEN['water']) * bp[CELL_WATER] +
@@ -300,9 +290,9 @@ class OracleAgentEx2:
             if p_t_minus > 0:
                 bp[CELL_VOLCANO] = ((1 - P_THERMAL_GIVEN['lava']) * bp[CELL_VOLCANO]) / p_t_minus
 
-        # Seismic sensor update
+        
         if seismic:
-            # P(W|S+) = P(S+|W) * P(W) / P(S+)
+            
             p_s_plus = (P_SEISMIC_GIVEN['water'] * bp[CELL_WATER] +
                        P_SEISMIC_GIVEN['lava'] * bp[CELL_VOLCANO] +
                        P_SEISMIC_GIVEN['land'] * bp[CELL_LAND] +
@@ -311,7 +301,7 @@ class OracleAgentEx2:
                 bp[CELL_WATER] = (P_SEISMIC_GIVEN['water'] * bp[CELL_WATER]) / p_s_plus
         
         else:
-            # P(W|S-) = P(S-|W) * P(W) / P(S-)
+            
             p_s_minus = ((1 - P_SEISMIC_GIVEN['water']) * bp[CELL_WATER] +
                         (1 - P_SEISMIC_GIVEN['lava']) * bp[CELL_VOLCANO] +
                         (1 - P_SEISMIC_GIVEN['land']) * bp[CELL_LAND] +
@@ -319,10 +309,10 @@ class OracleAgentEx2:
             if p_s_minus > 0:
                 bp[CELL_WATER] = ((1 - P_SEISMIC_GIVEN['water']) * bp[CELL_WATER]) / p_s_minus
 
-        # Normalize all probabilities
+        
         self._normalize_beliefs(bp)
         
-        # Debug output to show Bayesian updates
+        
         if abs(bp[CELL_VOLCANO] - original_volcano) > 0.01 or abs(bp[CELL_WATER] - original_water) > 0.01:
             print(f"[Ex2] Bayesian update at ({r},{c}): V {original_volcano:.3f}→{bp[CELL_VOLCANO]:.3f}, "
                   f"W {original_water:.3f}→{bp[CELL_WATER]:.3f}, thermal={thermal}, seismic={seismic}")
@@ -334,7 +324,7 @@ class OracleAgentEx2:
 
     def _is_hazardous(self, r: int, c: int) -> bool:
         """Check if cell is considered hazardous based on risk threshold."""
-        # Be more conservative - only avoid cells with very high risk
+        
         return self._get_risk_score(r, c) > 0.8
 
     def _in_bounds(self, r: int, c: int) -> bool:
@@ -343,14 +333,14 @@ class OracleAgentEx2:
     def _neighbors(self, r: int, c: int):
         """Generate valid neighbors for movement."""
         for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
-            # Walk
+            
             nr, nc = r+dr, c+dc
             if self._in_bounds(nr, nc) and self.grid[nr][nc] != CELL_BRICK:
                 yield (nr, nc, 'walk', WALK_TIME_COST, TURN_COST)
 
-            # Jump
-            mr, mc = r+dr,   c+dc    # middle cell
-            jr, jc = r+2*dr, c+2*dc  # landing cell
+            
+            mr, mc = r+dr,   c+dc   
+            jr, jc = r+2*dr, c+2*dc  
             if (self._in_bounds(mr, mc) and self._in_bounds(jr, jc) and
                 self.grid[mr][mc] != CELL_BRICK and self.grid[jr][jc] != CELL_BRICK):
                 yield (jr, jc, 'jump', JUMP_TIME_COST, TURN_COST)
@@ -361,7 +351,7 @@ class OracleAgentEx2:
         manhattan = abs(r-gr) + abs(c-gc)
         min_time = math.ceil(manhattan / 2) * JUMP_TIME_COST
         
-        # Add risk penalty
+        
         risk_penalty = self._get_risk_score(r, c) * 10
         
         if lives <= 0:
@@ -372,26 +362,26 @@ class OracleAgentEx2:
         """Perform sensor scan on a cell."""
         cell_type = self.grid[r][c]
         
-        # Thermal sensor (noisy)
+        
         thermal_true = (cell_type == CELL_VOLCANO)
         if thermal_true:
             thermal = random.random() < P_THERMAL_GIVEN['lava']
         else:
-            # For non-lava cells, use the false positive rate
+           
             thermal = random.random() < P_THERMAL_GIVEN['land']
         
-        # Seismic sensor (noisy)
+        
         seismic_true = (cell_type == CELL_WATER)
         if seismic_true:
             seismic = random.random() < P_SEISMIC_GIVEN['water']
         else:
-            # For non-water cells, use the false positive rate
+            
             seismic = random.random() < P_SEISMIC_GIVEN['land']
         
-        # Update beliefs
+        
         self._bayesian_update(r, c, thermal, seismic)
         
-        # Log the scan
+        
         scan_record = ScanRecord(
             cell=cell_type,
             thermal=thermal,
@@ -402,7 +392,7 @@ class OracleAgentEx2:
         )
         self.scan_log.append(scan_record)
         
-        # Update scan count
+        
         self.scan_counts[(r,c)] = self.scan_counts.get((r,c), 0) + 1
         
         return thermal, seismic
@@ -416,8 +406,7 @@ class OracleAgentEx2:
 
     def _a_star_with_beliefs(self, start: Tuple[int,int], max_scans: int = 5) -> Tuple[Optional[List], int, int, int]:
         """A* search with belief-based risk assessment."""
-        heap = [(0.0, 0, 0, MAX_LIVES, start, [start], 0)]  # (priority, turns, time, lives, pos, path, scans_used)
-        best = {}
+        heap = [(0.0, 0, 0, MAX_LIVES, start, [start], 0)]  
         
         while heap:
             priority, turns, time_u, lives, pos, path, scans_used = heapq.heappop(heap)
@@ -434,13 +423,13 @@ class OracleAgentEx2:
             if lives <= 0 or scans_used >= max_scans:
                 continue
             
-            # Scan current cell if not scanned too many times
+            
             if self.scan_counts.get((r,c), 0) < MAX_SCANS_PER_CELL:
                 thermal, seismic = self._scan_cell(r, c, turns)
                 scans_used += 1
             
             for nr, nc, action, t_cost, turn_cost in self._neighbors(r, c):
-                # Check if cell is too risky
+                
                 if self._is_hazardous(nr, nc):
                     continue
                 
@@ -448,9 +437,9 @@ class OracleAgentEx2:
                 new_time = time_u + t_cost
                 new_lives = lives
                 
-                # Simulate damage based on beliefs (for planning)
-                if self._get_risk_score(nr, nc) > 0.5:  # High risk
-                    if random.random() < 0.7:  # 70% chance of damage
+                
+                if self._get_risk_score(nr, nc) > 0.5:  
+                    if random.random() < 0.7:  
                         new_lives -= 1
                 
                 if new_lives <= 0:
@@ -471,7 +460,7 @@ class OracleAgentEx2:
         """Run multiple path explorations to find optimal path."""
         print("[Ex2] Exploring multiple paths with probabilistic sensors...")
         
-        # Explore multiple paths with different scan limits
+        
         for scan_limit in [3, 5, 7, 10]:
             print(f"[Ex2] Path exploration {scan_limit} scans...")
             path, turns, time_u, lives = self._a_star_with_beliefs((0,0), scan_limit)
@@ -495,7 +484,7 @@ class OracleAgentEx2:
             print("[Ex2] No valid paths found!")
             return None, None
         
-        # Simulate the best path
+        
         print(f"[Ex2] Selected best path with score: {self.best_score:.4f}")
         return self._simulate_best_path()
 
@@ -509,8 +498,6 @@ class OracleAgentEx2:
         turns = 0
         time_u = 0
         
-        # Reset beliefs for clean simulation (or keep exploration beliefs)
-        # Let's keep the exploration beliefs to show the learning
         print(f"[Ex2] Starting simulation with {len(self.scan_log)} scan events from exploration")
         
         for i in range(len(self.best_path)-1):
@@ -526,12 +513,12 @@ class OracleAgentEx2:
             turns += TURN_COST
             time_u += t_cost
             
-            # Scan the destination cell (continue learning during simulation)
+            
             if self.scan_counts.get((tr, tc_), 0) < MAX_SCANS_PER_CELL:
                 thermal, seismic = self._scan_cell(tr, tc_, turns)
                 print(f"[Ex2] Simulation scan at ({tr},{tc_}): thermal={thermal}, seismic={seismic}")
             
-            # Check for damage
+            
             cell_type = self.grid[tr][tc_]
             took_damage = cell_type in HAZARD_CELLS
             if took_damage:
@@ -540,7 +527,7 @@ class OracleAgentEx2:
             
             score = (turns + time_u) / lives if lives > 0 else float('inf')
             
-            # Show current beliefs for key cells
+            
             current_beliefs = self.beliefs[tr][tc_]
             risk_score = current_beliefs[CELL_VOLCANO] + current_beliefs[CELL_WATER]
             
@@ -554,8 +541,8 @@ class OracleAgentEx2:
                 turns=turns,
                 time_units=time_u,
                 score=score,
-                beliefs=[row[:] for row in self.beliefs],  # Deep copy beliefs
-                scan_events=self.scan_log[:]  # Copy scan events
+                beliefs=[row[:] for row in self.beliefs], 
+                scan_events=self.scan_log[:]  
             ))
             
             print(f"[Ex2] Step {i+1}: ({fr},{ff}) → ({tr},{tc_}) | Action: {action} | "
