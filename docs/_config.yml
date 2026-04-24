@@ -1,0 +1,20 @@
+# Jekyll configuration for GitHub Pages
+title: "Oracle Agent"
+description: "Research-grade intelligent agent for partially observable grid navigation"
+baseurl: "/oracle-agent"
+url: "https://samanyu-dev.github.io"
+theme: minima
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
