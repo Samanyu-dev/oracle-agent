@@ -1,174 +1,220 @@
-# CSF407_2026_2022A4PS0398H - Oracle Agent
-
-This is our submission for Project Assignment 1 of CS F407 (Artificial Intelligence).
-
----
-
-## Group Details
-
-Group ID: CSF407_2026_2022A4PS0398H
-
-Group Leader  
-Name – Nandana Krishna Konduru
-ID – 2022A4PS0398H
-
-Member 2  
-Name –  Allipuram Samanyu Reddy
-ID – 2023A2PS0910H
-
-Member 3  
-Name – Rohith Srinivas Bollineni
-ID – 2022A7PS1294H
-
-Member 4  
-Name – Dhanush Reddy J 
-ID – 2022A7PS0005H
-
----
-
-## What This Project Is About
-
-We built an agent called Oracle that has to navigate through a grid full of hazards and reach the goal without dying. The grid has volcanoes, water bodies, land, and brick walls. The agent starts at the top left corner and has to reach the bottom right corner.
-
-We did this in two parts:
-
-**Exercise 1** - The agent can see everything clearly. It knows exactly what each cell is and uses A* search to find the best path.
-
-**Exercise 2** - The agent is now blind. It cannot see what type each cell is. It uses two noisy sensors (thermal and seismic) and applies Bayesian inference to guess what each cell might be before deciding to move.
-
----
-
-## File Structure
+<div align="center">
 
 ```
-CSF407_2026_IDX/
-├── src/
-│   ├── config.py         all the parameters and settings
-│   ├── grid_gen.py       generates the grid and the path
-│   ├── agent.py          the Oracle agent for both exercises
-│   ├── visualizer.py     draws the grid and saves the animation
-│   └── main.py           run this file to start everything
-├── outputs/              all generated images and GIFs go here
-├── config.yml            conda environment file
-└── README.md             this file
+   ____  _   _  ___  _   _ _     _____   __
+  / __ \| | | |/ _ \| | | | |   / _ \ \ / /
+ | |  | | | | | | | | | | | |  | (_) \ V / 
+ | |  | | | | | | | | | | | |   > _ < > <  
+ | |__| | |_| | |_| | |_| | |___| (_) / . \ 
+  \____/ \___/ \___/ \___/|_____\___/_/ \_\
 ```
+
+# 🔮 ORACLE: The Last Probe
+
+**An autonomous exploration agent navigating the uncharted wastelands of Kepler-186f.**
+
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![AI](https://img.shields.io/badge/AI-A*_Search-FF6F00?logo=openai&logoColor=white)]()
+[![Bayesian](https://img.shields.io/badge/Sensor_Fusion-Bayesian_Inference-9C27B0)]()
+[![Status](https://img.shields.io/badge/Mission_Status-OPERATIONAL-brightgreen)]()
+
+*"In a world of noise and uncertainty, only the Oracle sees the path."*
+
+</div>
 
 ---
 
-## How to Set Up and Run
+## 🌌 The Lore
 
-**Step 1: Create the conda environment**
+> **Stardate 2187.** The colony ship *Aether* has dispatched its final probe — **Oracle** — to chart a safe passage across the volatile surface of Kepler-186f. The terrain is unforgiving: **magma vents** erupt without warning, **toxic aquifers** lie hidden beneath crusted dust, **impassable basalt walls** fracture the landscape, and stretches of **stable bedrock** are the only refuge.
+>
+> Oracle begins at the **Northern Landing Zone** (0,0). The extraction point awaits at the **Southern Ridge** (n,n). Lives are limited. Time is scarce. The mission: **survive the crossing.**
+
+---
+
+## 🎮 Game Modes
+
+Oracle operates in two distinct modes of consciousness. Choose your challenge:
+
+### 🧿 MODE I: The All-Seeing Eye *(Deterministic)*
+> **Difficulty:** ⭐⭐⭐☆☆  
+> **Sensor Status:** OMNI-OPTIC ONLINE
+
+Oracle possesses perfect omniscience. Every tile is known. Every threat is mapped. It deploys **A\* Search** with a custom survival heuristic, optimizing not merely for distance, but for the sacred ratio:
+
+```
+Survival Score = (Turns + Time Units) ÷ Lives Remaining
+```
+
+Lower is better. Oracle doesn't just find *a* path — it finds the path where **you live longest.**
+
+**Moveset:**
+| Action | Cost | Mechanics |
+|--------|------|-----------|
+| 🚶 Walk | 2 TU + 1 Turn | Move 1 tile. Standard reconnaissance. |
+| 🦘 Jump | 3 TU + 1 Turn | Leap 2 tiles, skipping the middle. No wall vaulting. |
+| 💀 Misstep | 1 Life | Touch Lava or Water. Oracle bleeds. |
+
+---
+
+### 🔥 MODE II: The Blind Prophet *(Probabilistic)*
+> **Difficulty:** ⭐⭐⭐⭐⭐  
+> **Sensor Status:** DEGRADED — THERMAL/SEISMIC ARRAY ONLY
+
+Oracle is blind. The grid is darkness. Before each risky step, it must **scan** the unknown using damaged sensors:
+
+- 🔥 **Thermal Array** — Detects magma vents (noisy, prone to false positives)
+- 🌊 **Seismic Resonator** — Detects subsurface water (erratic in basalt fields)
+
+Every scan feeds into a **Bayesian Belief Engine**. Priors update. Uncertainty collapses. Oracle builds a living probability map of the unseen world.
+
+**Scan Limits:** 4 scans per cell. After that? The tile is declared **unreachable** and Oracle adapts.
+
+```
+Prior Beliefs (Every Tile at Birth):
+┌──────────┬──────────┬──────────┬──────────┐
+│ Volcano  │  Water   │   Land   │  Brick   │
+│   24%    │   24%    │   16%    │   36%    │
+└──────────┴──────────┴──────────┴──────────┘
+```
+
+> *"To navigate the unseen is not madness — it is mathematics."*
+
+---
+
+## 🗺️ World Generation
+
+The planet surface is procedurally generated. No two missions are alike.
+
+```
+Mission Parameters:
+├── Grid Size: 9×9 (configurable 8×8 to 10×10)
+├── Path Generation: Biased Random Walk (30% chaos factor)
+├── Anchor Points: 2 (quadrant-locked, non-collinear)
+├── Path Hazards: 2 Volcanoes + 2 Waters (non-adjacent)
+├── Off-Path Fill: 50% Hazard | 40% Land | 10% Brick Wall
+└── Result: INFINITE REPLAYABILITY
+```
+
+The procedural engine ensures the safe corridor between anchors is never a boring straight line. Oracle must *think*, not just walk.
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.10+
+- Conda (recommended)
+
+### Launch Sequence
 
 ```bash
+# Step 1: Initialize the habitat
 conda env create -f config.yml
-```
 
-**Step 2: Activate the environment**
+# Step 2: Awaken Oracle
+conda activate oracle-agent
 
-```bash
-conda activate CSF407_2026_2022A4PS0398H
-```
-
-**Step 3: Go into the src folder and run**
-
-```bash
+# Step 3: Deploy
 cd src
 python main.py
 ```
 
-That's it. The program will generate the grid, run both agents, and save everything to the outputs folder.
+**Output artifacts** auto-materialize in `outputs/`:
+
+| Artifact | Description |
+|----------|-------------|
+| `ground_truth.png` | Satellite view with the true safe corridor |
+| `initial_grid.png` | Pre-mission reconnaissance snapshot |
+| `simulation_ex1.gif` | 🎬 Cinematic playback of Mode I |
+| `simulation_ex2.gif` | 🎬 Split-screen: Belief Map vs Reality (Mode II) |
+| `frames/` | Frame-by-frame stills for analysis |
 
 ---
 
-## What Gets Generated
+## 🏆 Oracle's Telemetry Dashboard
 
-After running main.py you will find these files in the outputs folder:
+Each mission generates a **debrief log**:
 
-- ground_truth.png - shows the grid with the safe path highlighted in yellow
-- initial_grid.png - shows the full generated grid before the agent runs
-- simulation_ex1.gif - animated simulation of Exercise 1 step by step
-- simulation_ex2.gif - animated simulation of Exercise 2 with the belief map and ground truth side by side
-- frames/ - all individual PNG frames for Exercise 1
-- frames_ex2/ - all individual PNG frames for Exercise 2
-
----
-
-## How the Grid is Generated
-
-The grid is between 8x8 and 10x10 cells. We used a 9x9 grid.
-
-The grid generation works like this:
-
-1. We first pick two anchor cells. One goes in the top left region of the grid and the other goes in the bottom right region. They have to be in different rows and different columns so the path is not just a straight line.
-
-2. We then build a path from (0,0) to anchor1 to anchor2 to (8,8) using a random walk. We added some noise to the walk (around 30% chance of taking a random step instead of going toward the goal) so that the path looks different every time the program runs.
-
-3. On this path, we place exactly 2 volcanoes and 2 water tiles. We make sure the same type of hazard is never placed next to itself on the path.
-
-4. For all the cells that are not on the path, we randomly fill them as 50% hazards, 40% land, and 10% brick walls.
+```
+╔══════════════════════════════════════╗
+║         MISSION DEBRIEF              ║
+╠══════════════════════════════════════╣
+║  Steps Completed : 14                ║
+║  Final Lives     : 2  ❤️❤️🖤         ║
+║  Total Turns     : 14                ║
+║  Time Units      : 29                ║
+║  Final Score     : 10.2500           ║
+║  Outcome         : 🏆 VICTORY        ║
+╚══════════════════════════════════════╝
+```
 
 ---
 
-## How the Agent Works
+## 🧠 Technical Architecture
 
-**Exercise 1 Agent**
+```
+┌─────────────────────────────────────────────┐
+│              ORACLE CORE v1.0               │
+├─────────────────────────────────────────────┤
+│  🎛️  CONFIG        → Mission parameters    │
+│  🗺️  GRID GEN      → Procedural world      │
+│  🧠  AGENT         → A* + Bayesian brain   │
+│  🎨  VISUALIZER    → Matplotlib cinema     │
+│  ⚡  MAIN           → Orchestrator          │
+└─────────────────────────────────────────────┘
+```
 
-The agent uses A* search. The state is the current position plus how many lives are left. The cost function is (turns + time units) divided by lives remaining. The agent tries to minimize this, which means it prefers paths where it keeps more lives and wastes less time.
-
-- Walking 1 cell costs 2 time units and 1 turn
-- Jumping 2 cells (skipping the middle) costs 3 time units and 1 turn
-- Jumping over a brick wall is not allowed
-- Stepping on a volcano or water costs 1 life
-- Dying means 0 lives which ends the episode
-
-**Exercise 2 Agent**
-
-The agent starts with no knowledge of the grid. Every cell starts with these prior probabilities:
-
-- P(Volcano) = 0.24
-- P(Water) = 0.24
-- P(Land) = 0.16
-- P(Brick) = 0.36
-
-Before moving to a risky cell, the agent can scan it. Each scan gives a noisy reading from the thermal and seismic sensors. The agent updates its belief using Bayes theorem after each scan. It can scan each cell up to 4 times. After 4 scans the cell is marked as blocked.
-
-The thermal and seismic values used for the Bayesian update come from the conditional probability table given in the assignment.
+### Algorithmic Arsenal
+- **A\* Search** with life-aware heuristic
+- **Bayesian Inference** for noisy sensor fusion
+- **Multi-path exploration** with scan-budgeted retries
+- **Manhattan-distance heuristics** optimized for jump mechanics
 
 ---
 
-## Visualization Details
+## 🎯 Can You Beat the Oracle?
 
-**Exercise 1:**
-- Black straight arrows for walking
-- Purple curved arrows for jumping
-- Red dashed arrows when the agent takes damage that turn
-- Red X symbol at cells where the agent lost a life
-- Title bar shows lives, score, turns, and time at each step
+Try your hand at out-piloting the agent:
 
-**Exercise 2:**
-- Left panel shows the agent's belief map with risk percentages in each cell
-- Right panel shows the actual ground truth grid
-- Cells with yellow borders have been scanned
-- The sensor readings (T: True/False, S: True/False) are shown on scanned cells
-- Both panels are synchronized to the same step
+> **Challenge I:** Run Mode I. Can *you* trace a path with a lower Survival Score than Oracle's A\*?
+>
+> **Challenge II:** Run Mode II. Given only the belief map at Step 5, guess the ground truth. How close are your instincts to Bayes' theorem?
+>
+> **Challenge III:** Tweak `NOISE` in `config.py`. At what chaos factor does Oracle fail to find *any* valid path?
+
+Post your scores. Tag your runs. `#BeatTheOracle`
 
 ---
 
-## Dependencies
+## 🛠️ System Requirements
 
-Everything is in config.yml. The main ones are:
-
-- Python 3.10
-- numpy
-- matplotlib
-- pillow
-- imageio with ffmpeg support
+```yaml
+Engine: Python 3.10
+Core Modules:
+  - numpy        # Matrix operations & probability
+  - matplotlib   # Tactical display rendering
+  - imageio      # Cinematic GIF export
+  - pillow       # Image frame processing
+```
 
 ---
 
-## Notes
+## ⚠️ Field Notes
 
-- The path generated is different every time you run main.py. This is by design.
-- Exercise 2 uses the exact same grid as Exercise 1. Only the agent changes.
-- If the program runs slowly on Exercise 2, it is because the agent is scanning cells during the A* search. This is normal behavior.
-- All outputs are saved automatically. You do not need to do anything extra after running main.py.
+- 🔄 **Every launch is unique.** The random walk ensures no memorization — only adaptation.
+- 🔗 **Mode II shares the exact same world** as Mode I. The only variable is Oracle's *mind*.
+- ⏳ **Mode II may run slower.** Real-time Bayesian updates during pathfinding are computationally expensive. This is expected behavior.
+- 📁 **All artifacts auto-save.** No manual intervention required post-launch.
+
+---
+
+<div align="center">
+
+### *"The grid is dark and full of terrors. But Oracle has computed the way."*
+
+🌟 Star this repo if Oracle survives your first run.  
+🍴 Fork it to build your own planetary probe.  
+🐛 Open an issue if Oracle falls into the abyss.
+
+</div>
