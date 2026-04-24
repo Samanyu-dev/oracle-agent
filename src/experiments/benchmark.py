@@ -5,7 +5,11 @@ Compares Deterministic, Bayesian, and RL agents across multiple metrics.
 
 import random
 from typing import List, Dict, Callable, Optional
-import numpy as np
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
