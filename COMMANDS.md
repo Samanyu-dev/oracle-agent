@@ -27,10 +27,17 @@ pip install numpy matplotlib pillow imageio
 
 ## 2. Running the Oracle Agent
 
-All commands should be run from the `src/` directory:
+You can run from either the project root or the `src/` directory:
 
+### Option A: Run from Project Root (Recommended)
+```bash
+python main.py --mode all --seed 42
+```
+
+### Option B: Run from src/ directory
 ```bash
 cd src
+python main.py --mode all --seed 42
 ```
 
 ### 2.1 Demo Modes
