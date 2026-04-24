@@ -1,14 +1,5 @@
 <div align="center">
 
-```
-   ____  _   _  ___  _   _ _     _____   __
-  / __ \| | | |/ _ \| | | | |   / _ \ \ / /
- | |  | | | | | | | | | | | |  | (_) \ V / 
- | |  | | | | | | | | | | | |   > _ < > <  
- | |__| | |_| | |_| | |_| | |___| (_) / . \ 
-  \____/ \___/ \___/ \___/|_____\___/_/ \_\
-```
-
 # 🔮 ORACLE: The Last Probe
 
 **An autonomous exploration agent navigating the uncharted wastelands of Kepler-186f.**
