@@ -98,9 +98,12 @@ def demo_bayesian(use_mcts: bool = False, seed: int = 42):
     print(f"  Agent stats: {agent.get_stats()}")
 
     # Plot belief evolution
-    from visualize.plots import plot_belief_evolution
-    os.makedirs(FIGURES_DIR, exist_ok=True)
-    plot_belief_evolution(belief_history, os.path.join(FIGURES_DIR, f'belief_evolution_{label.lower()}.png'))
+    try:
+        from visualize.plots import plot_belief_evolution
+        os.makedirs(FIGURES_DIR, exist_ok=True)
+        plot_belief_evolution(belief_history, os.path.join(FIGURES_DIR, f'belief_evolution_{label.lower()}.png'))
+    except ImportError as e:
+        print(f"[Plot] Skipped belief evolution plot: {e}")
 
 
 def train_rl(n_episodes: int = RL_EPISODES, save_path: str = 'models/q_table.json'):
@@ -120,11 +123,13 @@ def train_rl(n_episodes: int = RL_EPISODES, save_path: str = 'models/q_table.jso
     rl_agent.save(save_path)
 
     # Plot training curves
-    os.makedirs(FIGURES_DIR, exist_ok=True)
-    plot_reward_curve(rl_agent.episode_rewards, path=os.path.join(FIGURES_DIR, 'rl_reward_curve.png'))
-
-    successes = [r > 0 for r in rl_agent.episode_rewards]
-    plot_success_rate(successes, path=os.path.join(FIGURES_DIR, 'rl_success_rate.png'))
+    try:
+        os.makedirs(FIGURES_DIR, exist_ok=True)
+        plot_reward_curve(rl_agent.episode_rewards, path=os.path.join(FIGURES_DIR, 'rl_reward_curve.png'))
+        successes = [r > 0 for r in rl_agent.episode_rewards]
+        plot_success_rate(successes, path=os.path.join(FIGURES_DIR, 'rl_success_rate.png'))
+    except ImportError as e:
+        print(f"[Plot] Skipped training curves: {e}")
 
     print(f"\n[Train] Model saved to {save_path}")
     print(f"[Train] Final epsilon: {rl_agent.q_engine.epsilon:.4f}")
@@ -148,11 +153,14 @@ def run_benchmark(n_episodes: int = BENCHMARK_EPISODES,
     logger.to_json(os.path.join(OUTPUT_DIR, 'benchmark_results.json'))
 
     # Plot comparison
-    summary = logger.summary()
-    plot_benchmark_comparison(summary, path=os.path.join(FIGURES_DIR, 'benchmark_comparison.png'))
+    try:
+        summary = logger.summary()
+        plot_benchmark_comparison(summary, path=os.path.join(FIGURES_DIR, 'benchmark_comparison.png'))
+        print(f"\n[Benchmark] Figures saved to {FIGURES_DIR}/")
+    except ImportError as e:
+        print(f"[Plot] Skipped benchmark comparison plot: {e}")
 
     print(f"\n[Benchmark] Results saved to outputs/benchmark_results.json")
-    print(f"[Benchmark] Figures saved to {FIGURES_DIR}/")
 
 
 def demo_rl(seed: int = 42, model_path: str = 'models/q_table.json'):
