@@ -7,7 +7,11 @@ import os
 import sys
 import argparse
 import random
-import numpy as np
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 

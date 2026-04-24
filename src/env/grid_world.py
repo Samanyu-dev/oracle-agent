@@ -4,8 +4,12 @@ Handles state transitions, rewards, and episode lifecycle.
 """
 
 import random
-import numpy as np
 from typing import Tuple, List, Dict, Optional
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
 from dataclasses import dataclass
 
 import sys, os

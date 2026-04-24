@@ -1,14 +1,26 @@
 """
 Visualization suite for Oracle Agent benchmarking and training.
 Generates publication-quality plots for analysis.
+Gracefully handles missing matplotlib.
 """
 
 import os
-import numpy as np
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+import random
 from typing import List, Dict, Optional
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
+
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
+    plt = None
 
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -20,8 +32,22 @@ from config import (
 )
 
 
+def _check_deps():
+    if not MATPLOTLIB_AVAILABLE:
+        raise ImportError(
+            "Matplotlib is required for plotting. "
+            "Install with: pip install matplotlib"
+        )
+    if np is None:
+        raise ImportError(
+            "NumPy is required for plotting. "
+            "Install with: pip install numpy"
+        )
+
+
 def plot_reward_curve(rewards: List[float], window: int = 100, path: str = REWARD_CURVE_PNG):
     """Plot training reward curve with moving average."""
+    _check_deps()
     os.makedirs(os.path.dirname(path), exist_ok=True)
     fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -46,6 +72,7 @@ def plot_reward_curve(rewards: List[float], window: int = 100, path: str = REWAR
 
 def plot_success_rate(successes: List[bool], window: int = 100, path: str = SUCCESS_RATE_PNG):
     """Plot success rate over training."""
+    _check_deps()
     os.makedirs(os.path.dirname(path), exist_ok=True)
     fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -70,6 +97,7 @@ def plot_success_rate(successes: List[bool], window: int = 100, path: str = SUCC
 
 def plot_benchmark_comparison(summary: Dict[str, Dict[str, float]], path: str = BENCHMARK_TABLE_PNG):
     """Bar chart comparing agent performance."""
+    _check_deps()
     os.makedirs(os.path.dirname(path), exist_ok=True)
     agents = list(summary.keys())
     metrics = ['success_rate', 'avg_reward', 'avg_lives']
@@ -99,6 +127,7 @@ def plot_belief_evolution(belief_history: List[Dict], path: str = BELIEF_EVOLUTI
     Plot how belief entropy evolves over steps for a single episode.
     belief_history: list of {step: int, beliefs: 2D array of dicts}
     """
+    _check_deps()
     os.makedirs(os.path.dirname(path), exist_ok=True)
     fig, ax = plt.subplots(figsize=(10, 6))
 

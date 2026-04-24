@@ -1,6 +1,10 @@
 import random
-import numpy as np
 from collections import deque
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
 from config import (
     GRID_ROWS, GRID_COLS,
     CELL_LAND, CELL_VOLCANO, CELL_WATER, CELL_BRICK, CELL_START, CELL_GOAL,
