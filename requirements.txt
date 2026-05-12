@@ -4,3 +4,9 @@ matplotlib>=3.5.0
 pillow>=9.0.0
 imageio>=2.19.0
 imageio[ffmpeg]>=2.19.0
+fastapi>=0.110.0
+uvicorn>=0.24.0
+gradio==3.40.0
+huggingface-hub==0.16.4
+plotly>=5.15.0
+pydantic>=1.10.16

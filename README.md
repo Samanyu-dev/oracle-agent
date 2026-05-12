@@ -9,17 +9,18 @@
   \____/ \___/ \___/ \___/|_____\___/_/ \_\
 ```
 
-# 🔮 ORACLE: Adaptive Grid Navigation Agent
+# 🔮 ORACLE AGENT — Interactive AI Survival Simulation OS
 
-**A research-grade intelligent agent for partially observable grid worlds, integrating A* search, Bayesian inference, Monte Carlo Tree Search, and Q-Learning.**
+**A cinematic command center for adaptive autonomous planning, probabilistic reasoning, and hazard survival.**
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://python.org)
-[![AI](https://img.shields.io/badge/Search-A*_Search-FF6F00)]()
+[![AI](https://img.shields.io/badge/Systems-A*_%2B_Bayesian-FF6F00)]()
 [![RL](https://img.shields.io/badge/Learning-Q--Learning-9C27B0)]()
 [![MC](https://img.shields.io/badge/Planning-MCTS-2E7D32)]()
-[![Status](https://img.shields.io/badge/Research_Grade-PUBLISHABLE-brightgreen)]()
+[![Experience](https://img.shields.io/badge/Experience-Vercel_%2B_HF-7C4DFF)]()
+[![License](https://img.shields.io/badge/License-MIT-000000.svg)](LICENSE)
 
-*"In a world of noise and uncertainty, only the Oracle sees the path."*
+*"This is not just pathfinding. This is an autonomous tactical intelligence system."*
 
 </div>
 
@@ -28,9 +29,11 @@
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Platform Strategy](#platform-strategy)
 - [Architecture](#architecture)
 - [Agent Types](#agent-types)
 - [Mathematical Foundations](#mathematical-foundations)
+- [Experience Roadmap](#experience-roadmap)
 - [Quick Start](#quick-start)
 - [Experiments](#experiments)
 - [Benchmarks](#benchmarks)
@@ -42,9 +45,17 @@
 
 ## Overview
 
-Oracle is an advanced grid-navigation agent designed to operate in **partially observable hazardous environments**. The terrain contains volcanoes, water bodies, stable land, and impassable brick walls. The agent must navigate from the top-left corner to the bottom-right corner while preserving limited lives.
+Oracle is an advanced  built to feel like a **futuristic AI command center**. It operates in **partially observable hazardous environments** featuring volcanoes, water hazards, brick walls, and limited lives. The agent must reach the goal while balancing survival, uncertainty, and tactical decision-making.
 
-This system goes far beyond basic pathfinding. It implements a **unified decision architecture** combining:
+This is not just a research demo. It is a foundation for an interactive experience with:
+
+- cinematic grid-world simulation
+- belief and uncertainty visualization
+- interactive search and planning dashboards
+- live reinforcement learning theater
+- benchmark command centers
+
+Oracle blends a **unified decision architecture** with a compelling interface-first vision:
 
 | Component | Technique | Purpose |
 |-----------|-----------|---------|
@@ -92,6 +103,39 @@ This system goes far beyond basic pathfinding. It implements a **unified decisio
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Platform Strategy
+
+Oracle is architected for a hybrid public experience:
+
+- **Primary Showcase:** Vercel + Next.js + Three.js for a cinematic, interactive simulation.
+- **Research Playground:** Hugging Face Spaces for benchmark reproducibility, configurable experiments, and academic showcase.
+- **Recruiter Magnet:** Present Oracle as an **Autonomous Survival Intelligence System** with a polished command-center interface.
+
+The ideal frontend pairs the existing engine with live features such as:
+
+- animated grid navigation and fog-of-war
+- Bayesian belief and uncertainty heatmaps
+- MCTS rollout and search tree animation
+- RL reward evolution and policy heatmaps
+- benchmark command dashboards and challenge modes
+
+> See `docs/platform_strategy.md` for the full hybrid deployment and showcase plan.
+
+---
+
+## Experience Roadmap
+
+This repository should be presented as a cinematic AI experience, not a static algorithm demo. Key experience pillars include:
+
+- **Live Grid World:** animated movement, hazard effects, zoom/pan controls, replay mode.
+- **AI Brain Visualization:** belief updates, entropy maps, sensor confidence, decision heatmaps.
+- **MCTS Theater:** branch expansion, UCB selection, rollout futures, explore/exploit visuals.
+- **RL Training Cinema:** reward curves, Q-table heatmaps, emergent policy stories.
+- **Benchmark Command Center:** success rates, reward histograms, efficiency metrics, animated comparisons.
+- **Cinematic Interface:** glassmorphism, neon gradients, pulse scan effects, tactical overlays.
 
 ---
 
@@ -213,6 +257,30 @@ python main.py --mode demo_bayesian --mcts
 
 ---
 
+## Deployment
+
+### Hugging Face Space
+- Use a single HF Space with the **Gradio SDK**.
+- Select the **Blank** template.
+- The repo root should contain `app.py`, `requirements.txt`, and `runtime.txt`.
+- Push your GitHub repo, then import it into Hugging Face Spaces.
+- HF will install dependencies from `requirements.txt` and run `python app.py`.
+- Recommended space name: `oracleagent` or `oracle-agent`.
+- Owner: `Sammy1808`.
+
+This repo also includes a `Dockerfile` for a custom **Docker** Space if you want full container control.
+
+### Vercel
+- Import the repo into Vercel.
+- Set the project root to `frontend/`.
+- Vercel will detect Next.js and build the site using `npm run build`.
+
+### License
+- This project is licensed under the **MIT License**.
+- The license file is included in `LICENSE`.
+
+---
+
 ## Experiments
 
 ### Experiment 1: Deterministic vs Bayesian Success Rate
@@ -258,7 +326,15 @@ Example benchmark results (500 episodes, 5 seeds):
 
 ## Visualization
 
-The system generates publication-quality figures:
+The current implementation produces publication-quality figures for training and benchmarking. The long-term goal is to extend this into a cinematic visualization layer with:
+
+- live grid-world rendering and hazard animation
+- Bayesian belief heatmaps and entropy overlays
+- MCTS tree expansion and rollout futures
+- RL reward cinema and emergent policy visuals
+- benchmark dashboards with animated comparison charts
+
+The system currently generates figures such as:
 
 | Figure | Description |
 |--------|-------------|

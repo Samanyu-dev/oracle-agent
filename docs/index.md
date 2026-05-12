@@ -5,131 +5,115 @@ title: Oracle Agent
 
 # 🔮 Oracle Agent
 
-**Adaptive Grid Navigation with A* Search, Bayesian Inference, MCTS, and Q-Learning**
+## Interactive AI Survival Simulation OS
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)](https://python.org)
-[![AI](https://img.shields.io/badge/Search-A*_Search-FF6F00)]()
-[![RL](https://img.shields.io/badge/Learning-Q--Learning-9C27B0)]()
-[![MC](https://img.shields.io/badge/Planning-MCTS-2E7D32)]()
-[![Status](https://img.shields.io/badge/Research_Grade-PUBLISHABLE-brightgreen)]()
-
----
-
-## 🎬 Live Demos
-
-| Deterministic Agent | Bayesian Agent | RL Agent Training |
-|:---:|:---:|:---:|
-| Perfect sensors, optimal path | Noisy sensors, belief maps | Learning over 3000 episodes |
-| 100% success, 4 lives | 100% success, 4 lives | 31.5% → improving |
+Oracle Agent is a research-grade autonomous intelligence system built for
+**visual decision-making**, **hazard survival**, and **interactive planning**.
+This project blends path planning, Bayesian inference, MCTS, and reinforcement
+learning into a cinematic command-center experience.
 
 ---
 
-## 🧠 What It Does
+## 🎯 Why This Is Different
 
-Oracle navigates a hazardous 9×9 grid containing:
-- 🔥 **Volcanoes** — lose 1 life on contact
-- 🌊 **Water** — lose 1 life on contact  
-- 🧱 **Brick Walls** — impassable
-- 🟩 **Land** — safe terrain
-
-The agent starts at `(0,0)` and must reach `(8,8)` while preserving its 4 lives.
+- **Not just an algorithm repo** — this is a design for a premium AI showcase.
+- **Best public experience:** Vercel for interactive simulation and cinematic UI.
+- **Best research layer:** Hugging Face Spaces for reproducibility, experiments,
+and benchmark exploration.
+- **Recruiter magnet:** Present Oracle as an AI operating system, not a toy demo.
 
 ---
 
-## 🏗️ Architecture
+## 🧠 Core Systems
 
-```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│  Sensors    │───▶│   Belief    │───▶│  Decision   │
-│ (Thermal +  │    │   Engine    │    │   Engine    │
-│  Seismic)   │    │  (Bayes)    │    │             │
-└─────────────┘    └─────────────┘    └──────┬──────┘
-                                              │
-                   ┌──────────────────────────┼──────────┐
-                   ▼                          ▼          ▼
-           ┌──────────────┐           ┌──────────────┐  ┌──────┐
-           │  A* Planner  │           │ MCTS Planner │  │  Q   │
-           │ (Determin.)  │           │ (Simulation) │  │Table │
-           └──────────────┘           └──────────────┘  └──────┘
-```
+- **A\*** — life-aware path planning for survival-first navigation
+- **Bayesian Inference** — belief maps and sensor uncertainty under partial
+  observability
+- **MCTS** — rollout-based decision planning with future branch visualization
+- **Q-Learning** — adaptive policy learning over episodes and environments
 
 ---
 
-## 📊 Benchmark Results
+## 🌌 Platform Strategy
 
-| Agent | Success Rate | Avg Reward | Avg Steps | Avg Lives |
-|-------|-------------|------------|-----------|-----------|
-| **Deterministic** | **100%** | **+274** | 10 | **4.0** |
-| **Bayesian** | **100%** | **+254** | 20 | **4.0** |
-| **Bayesian+MCTS** | **99%** | +11 | 28 | 1.0 |
-| **RL (untrained)** | **0%** | -114 | 7 | 0.0 |
+### Primary Showcase: Vercel
 
-*Benchmarked over 100 episodes on randomly generated grids.*
+Launch a cinematic frontend with:
 
----
+- animated grid-world simulation
+- holographic UI and tactical overlays
+- real-time path / hazard visualization
+- fog-of-war and belief heatmaps
+- MCTS search theater and rollout animation
+- RL training dashboards and policy evolution
 
-## 🚀 Quick Start
+### Secondary Research Playground: Hugging Face
 
-```bash
-# Clone the repository
-git clone https://github.com/Samanyu-dev/oracle-agent.git
-cd oracle-agent
+Use a Hugging Face Space for:
 
-# Install dependencies
-pip install -r requirements.txt
+- benchmark dashboards
+- experiment configuration
+- reproducible notebooks
+- model/environment parameter tuning
+- academic presentation and publication support
 
-# Run a demo
-python main.py --mode demo_deterministic --seed 42
-
-# Run full benchmark
-python main.py --mode benchmark --n_episodes 100
-```
+- [Read the full platform strategy and hybrid deployment plan](platform_strategy.html)
 
 ---
 
-## 📁 Repository
+## 🚀 Experience Pillars
 
-🔗 **[View on GitHub](https://github.com/Samanyu-dev/oracle-agent)**
+- **Live Grid World** — smooth agent movement, hazard animation, replay mode
+- **AI Brain Visualization** — belief updates, entropy, sensor confidence
+- **MCTS Theater** — tree expansion, UCB selection, future rollout paths
+- **RL Training Cinema** — reward curves, Q-table heatmaps, learning evolution
+- **Benchmark Command Center** — success rates, rewards, metrics, comparisons
+
+---
+
+## 🔧 Project Structure
 
 ```
 src/
-├── config.py              # All hyperparameters
+├── config.py              # Centralized hyperparameters
 ├── main.py                # Unified CLI entry point
-├── env/grid_world.py      # Environment physics
-├── belief/bayesian_update.py  # Probabilistic state estimation
-├── planning/astar.py      # Life-aware A* search
-├── planning/monte_carlo.py    # MCTS with UCB1
-├── agents/                # Deterministic, Bayesian, RL agents
-├── learning/q_learning.py # Tabular Q-learning engine
-├── utils/metrics.py       # Benchmarking & logging
-├── experiments/benchmark.py   # Full evaluation suite
-└── visualize/plots.py     # Publication-quality plots
+├── env/                   # Grid world physics and hazards
+├── belief/                # Bayesian belief update engine
+├── planning/              # A* and MCTS planners
+├── agents/                # Deterministic, Bayesian, and RL agents
+├── learning/              # Q-Learning training engine
+├── utils/                 # Benchmarking and metrics
+├── experiments/           # Evaluation and benchmark runners
+└── visualize/             # Plot generation and result visualization
 ```
 
 ---
 
-## 🧪 Experiments
+## 🧪 What Comes Next
 
-1. **Deterministic vs Bayesian** — Perfect info guarantees success; partial observability requires smart scanning
-2. **Information Gain vs Random** — Entropy-based scanning outperforms random by 40%
-3. **RL Convergence** — Success rate increases from 0% → 31.5% over 3000 training episodes
-4. **Cross-Episode Memory** — Transfer learning improves first-episode success by 15%
-
----
-
-## 📚 References
-
-1. Russell & Norvig, *AI: A Modern Approach* (4th Ed.)
-2. Watkins & Dayan, "Q-Learning" (1992)
-3. Kocsis & Szepesvári, "Bandit Based Monte-Carlo Planning" (2006)
-4. Thrun, "Probabilistic Robotics" (2002)
+- Cinematic frontend with Three.js and React Three Fiber
+- Real-time WebSocket simulation playback
+- Belief heatmaps and uncertainty overlays
+- MCTS search tree animation
+- RL training theater and reward evolution visuals
+- Leaderboards, challenge modes, and seeded scenarios
 
 ---
 
-<div align="center">
+## 📌 Get Started
 
-**Made with 🧠, 🐍, and a lot of ☕**
+- Clone: `git clone https://github.com/Samanyu-dev/oracle-agent.git`
+- Install: `pip install -r requirements.txt`
+- Run: `python main.py --mode benchmark --n_episodes 100`
 
-[⭐ Star on GitHub](https://github.com/Samanyu-dev/oracle-agent) · [🐛 Report Issue](https://github.com/Samanyu-dev/oracle-agent/issues)
+---
 
-</div>
+## 📚 Research-Grade Positioning
+
+Frame Oracle Agent as an **Adaptive Autonomous Planning Engine**:
+
+- autonomous survival intelligence
+- tactical decision-making simulator
+- probabilistic command center
+- interactive lab for AI planning research
+
