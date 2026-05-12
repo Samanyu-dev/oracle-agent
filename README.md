@@ -1,3 +1,16 @@
+---
+title: Oracleagent
+emoji: 🏆
+colorFrom: purple
+colorTo: indigo
+sdk: gradio
+sdk_version: "6.14.0"
+python_version: "3.10"
+app_file: app.py
+pinned: false
+license: mit
+---
+
 <div align="center">
 
 ```
@@ -23,18 +36,6 @@
 *"This is not just pathfinding. This is an autonomous tactical intelligence system."*
 
 </div>
-
----
-title: Oracle Agent
-emoji: 🔮
-colorFrom: purple
-colorTo: blue
-sdk: gradio
-sdk_version: 5.29.0
-app_file: app.py
-pinned: false
-license: mit
----
 
 ---
 
