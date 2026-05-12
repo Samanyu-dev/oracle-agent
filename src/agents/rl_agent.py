@@ -42,6 +42,7 @@ class RLAgent:
             'steps': 0,
             'training_episodes': 0,
         }
+        self.last_decision: Dict = {}
 
     def reset(self):
         self.belief = BeliefEngine(self.rows, self.cols)
@@ -54,6 +55,7 @@ class RLAgent:
             'steps': 0,
             'training_episodes': self.q_engine.epsilon,
         }
+        self.last_decision = {}
 
     def act(self, env: GridWorld, training: bool = False) -> str:
         """
@@ -94,6 +96,15 @@ class RLAgent:
                 q_values = {a: self.q_engine.q_table[state][a] for a in actions}
                 action = max(q_values, key=q_values.get)
 
+        q_values = {a: self.q_engine.q_table[state][a] for a in actions}
+        best_action = max(q_values, key=q_values.get) if q_values else action
+        self.last_decision = {
+            'state': list(state),
+            'action': action,
+            'best_action': best_action,
+            'q_values': q_values,
+            'epsilon': self.q_engine.epsilon,
+        }
         self.stats['steps'] += 1
         if action == 'scan':
             self.stats['scans'] += 1
@@ -214,3 +225,9 @@ class RLAgent:
 
     def get_stats(self) -> Dict:
         return self.stats.copy()
+
+    def get_runtime_insights(self) -> Dict:
+        return {
+            'last_decision': self.last_decision,
+            'epsilon': self.q_engine.epsilon,
+        }

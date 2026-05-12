@@ -35,6 +35,8 @@ class BayesianAgent:
         self.plan_idx = 0
         self.scan_log: List[Dict] = []
         self.memory: Dict[Tuple[int, int], Dict[str, float]] = {}
+        self.last_mcts_stats: Dict = {}
+        self.last_decision: Dict = {}
         self.stats = {
             'agent_type': 'Bayesian' + ('+MCTS' if use_mcts else ''),
             'scans': 0,
@@ -52,6 +54,8 @@ class BayesianAgent:
         self.current_path = None
         self.plan_idx = 0
         self.scan_log = []
+        self.last_mcts_stats = {}
+        self.last_decision = {}
         self.stats = {
             'agent_type': 'Bayesian' + ('+MCTS' if self.use_mcts else ''),
             'scans': 0,
@@ -77,6 +81,12 @@ class BayesianAgent:
                 'pos': pos, 'thermal': thermal, 'seismic': seismic,
                 'belief': self.belief.get_belief(r, c)
             })
+            self.last_decision = {
+                'mode': 'scan',
+                'position': pos,
+                'risk': self.belief.get_risk(r, c),
+                'entropy': self.belief.entropy(r, c),
+            }
             self.stats['scans'] += 1
             return 'scan'
 
@@ -94,19 +104,37 @@ class BayesianAgent:
             # If MCTS is enabled, validate action
             if self.use_mcts and random.random() < 0.3:
                 mcts_action, mcts_stats = self.mcts.plan(env)
+                self.last_mcts_stats = mcts_stats
                 if mcts_action != 'scan':
                     action = mcts_action
+            self.last_decision = {
+                'mode': 'path_follow',
+                'position': pos,
+                'next': nxt,
+                'action': action,
+            }
             return action
 
         # Fallback: MCTS direct action
         if self.use_mcts:
             action, _ = self.mcts.plan(env)
+            self.last_decision = {
+                'mode': 'mcts_fallback',
+                'position': pos,
+                'action': action,
+            }
             self.stats['steps'] += 1
             return action
 
         # Ultimate fallback: random legal move
         actions = [a for a in env.ACTIONS if a != 'scan']
-        return random.choice(actions) if actions else 'scan'
+        choice = random.choice(actions) if actions else 'scan'
+        self.last_decision = {
+            'mode': 'random_fallback',
+            'position': pos,
+            'action': choice,
+        }
+        return choice
 
     def _should_scan(self, env: GridWorld, r: int, c: int) -> bool:
         """
@@ -178,3 +206,18 @@ class BayesianAgent:
 
     def get_stats(self) -> Dict:
         return self.stats.copy()
+
+    def get_runtime_insights(self) -> Dict:
+        """Runtime telemetry for UI cognition overlays."""
+        path_preview = self.current_path or []
+        next_waypoint = None
+        if self.current_path and self.plan_idx < len(self.current_path) - 1:
+            next_waypoint = self.current_path[self.plan_idx + 1]
+        return {
+            'path_preview': [list(cell) for cell in path_preview],
+            'path_index': self.plan_idx,
+            'next_waypoint': list(next_waypoint) if next_waypoint else None,
+            'last_mcts_stats': self.last_mcts_stats,
+            'last_decision': self.last_decision,
+            'scan_events': self.scan_log[-10:],
+        }

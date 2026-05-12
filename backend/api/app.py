@@ -26,6 +26,8 @@ class SessionCreateRequest(BaseModel):
     grid_cols: int = Field(9, ge=5, le=25, description='Grid column count')
     seed: Optional[int] = Field(None, description='Optional RNG seed')
     model_path: str = Field('models/q_table.json', description='Path to saved RL Q-table')
+    mission_mode: str = Field('survival', description='Mission mode profile')
+    difficulty: str = Field('tactical', description='Difficulty profile')
 
 
 class StepRequest(BaseModel):
@@ -55,6 +57,8 @@ def create_session(request: SessionCreateRequest):
             grid_cols=request.grid_cols,
             seed=request.seed,
             model_path=request.model_path,
+            mission_mode=request.mission_mode,
+            difficulty=request.difficulty,
         )
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc))

@@ -76,3 +76,9 @@ class DeterministicAgent:
 
     def get_stats(self) -> Dict:
         return self.stats.copy()
+
+    def get_runtime_insights(self) -> Dict:
+        return {
+            'path_preview': [list(cell) for cell in (self.path or [])],
+            'path_index': self.plan_idx,
+        }
