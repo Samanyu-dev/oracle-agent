@@ -88,11 +88,11 @@ Oracle blends a **unified decision architecture** with a compelling interface-fi
 │                    ORACLE UNIFIED ARCHITECTURE                  │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   ┌─────────────┐    ┌─────────────┐    ┌─────────────┐        │
-│   │  Sensors    │───▶│   Belief    │───▶│  Decision   │        │
-│   │ (Thermal +  │    │   Engine    │    │   Engine    │        │
-│   │  Seismic)   │    │  (Bayes)    │    │             │        │
-│   └─────────────┘    └─────────────┘    └──────┬──────┘        │
+│   ┌─────────────┐    ┌─────────────┐     ┌─────────────┐        │
+│   │  Sensors    │───▶│   Belief    │───▶ │  Decision   │        │
+│   │ (Thermal +  │    │   Engine    │     │   Engine    │        │
+│   │  Seismic)   │    │  (Bayes)    │     │             │        │
+│   └─────────────┘    └─────────────┘     └──────┬──────┘        │
 │                                                 │               │
 │                    ┌────────────────────────────┼──────────┐    │
 │                    ▼                            ▼          ▼    │
